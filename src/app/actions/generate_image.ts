@@ -6,16 +6,19 @@ export async function generateImage(text: string) {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
-                "X-API-SECRET": process.env.API_SECRET || "",
+                "X-API-SECRET": process.env.API_KEY || "",
             },
             body: JSON.stringify({ text }),
         });
+       
+        
 
-        if (!response.ok) {
+       
+       if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const data = await response.json();
+       const data = await response.json();
         return data;
     } catch (error) {
         console.error("Server Error:", error);

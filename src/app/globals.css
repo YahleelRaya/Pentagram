@@ -3,13 +3,13 @@
 @tailwind utilities;
 
 :root {
-  --background: #797171;
+  --background: linear-gradient(to right top, #2e06cf, #2227d5, #1739da, #1149de, #1456e1, #3561e3, #4a6be5, #5b76e6, #7583e9, #8b90eb, #9e9eee, #b0acf1);
   --foreground:   #8cff00   
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0b075c;
+    --background: linear-gradient(to right top, #2e06cf, #2227d5, #1739da, #1149de, #1456e1, #3561e3, #4a6be5, #5b76e6, #7583e9, #8b90eb, #9e9eee, #b0acf1);
     --foreground: #ededed;
   }
 }

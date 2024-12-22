@@ -18,6 +18,7 @@ export default function ImageGenerator({ generateImage }: ImageGeneratorProps) {
         e.preventDefault();
         setLastPrompt(inputText);
         setIsLoading(true);
+        setIsLoading(true);
         setImageSrc(null);
         setError(null);
 
@@ -66,6 +67,7 @@ export default function ImageGenerator({ generateImage }: ImageGeneratorProps) {
         src={imageSrc}
         alt="Generated artwork"
         className="w-full h-auto"
+        style={{ width: '30%', height: '30%' }}
       />
     </div>
   )}
