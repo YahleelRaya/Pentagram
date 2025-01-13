@@ -1,6 +1,6 @@
 "use client"
 import { useState, useEffect} from "react";
-
+import Image from 'next/image'
 interface ImageGeneratorProps {
     generateImage: (
         text: string
@@ -47,10 +47,10 @@ export default function ImageGenerator({ generateImage }: ImageGeneratorProps) {
             }
 
             setInputText("");
-        } catch (error) {
-            console.error("Error:", error);
+        } catch (caughtError) {
+            console.error("Error:", caughtError);
             setError(
-                error instanceof Error ? error.message : "Failed to generate image"
+                caughtError instanceof Error ? caughtError.message : "Failed to generate image"
             );
         } finally {
             setIsLoading(false);
@@ -109,7 +109,7 @@ export default function ImageGenerator({ generateImage }: ImageGeneratorProps) {
                       <div className="flex flex-wrap gap-4">
                           {images.map((image, index) => (
                               <div key={index} className="relative group w-full max-w-xs rounded-lg overflow-hidden shadow-lg">
-                                  <img
+                                  <Image
                                       src={image}
                                       alt={`Generated artwork ${index + 1}`}
                                       className="w-full h-auto"
