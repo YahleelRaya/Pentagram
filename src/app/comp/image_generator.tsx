@@ -10,8 +10,6 @@ interface ImageGeneratorProps {
 export default function ImageGenerator({ generateImage }: ImageGeneratorProps) {
     const [inputText, setInputText] = useState("");
     const [isLoading, setIsLoading] = useState(false);
-    const [lastPrompt, setLastPrompt] = useState<string | null>(null); 
-    //const [imageSrc, setImageSrc] = useState<string | null>(null);
     const [images, setImages] = useState<string[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [bookmarkedImages, setBookmarkedImages] = useState<string[]>([]);
@@ -28,11 +26,9 @@ export default function ImageGenerator({ generateImage }: ImageGeneratorProps) {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setLastPrompt(inputText);
         setIsLoading(true);
-        setIsLoading(true);
-        //setImageSrc(null);
-        setError(null);
+        //setIsLoading(true);
+        setError(error);
 
         try {
             const result = await generateImage(inputText);
@@ -112,13 +108,19 @@ export default function ImageGenerator({ generateImage }: ImageGeneratorProps) {
                                   <Image
                                       src={image}
                                       alt={`Generated artwork ${index + 1}`}
+                                      width={500} 
+                                      height={500} 
                                       className="w-full h-auto"
                                   />
                                      {/* Bookmark Button */}
                              <button
                               onClick={() => handleBookmark(image)}
-                              className="absolute top-2 right-2 rounded-full p-2 z-10 transition-opacity
-                              ${bookmarkedImages.includes(image) ? 'bg-white text-black' : 'bg-black bg-opacity-50 text-white opacity-0 group-hover:opacity-100'}}"
+                              className={`absolute top-2 right-2 rounded-full p-2 z-10 transition-opacity ${
+                                bookmarkedImages.includes(image)
+                                  ? 'bg-white text-black'
+                                  : 'bg-black bg-opacity-50 text-white opacity-0 group-hover:opacity-100'
+                              }`}
+                              
                                 >
                                <svg
                     xmlns="http://www.w3.org/2000/svg"
