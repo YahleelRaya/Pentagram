@@ -9,13 +9,15 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: linear-gradient(to right top, #2e06cf, #2227d5, #1739da, #1149de, #1456e1, #3561e3, #4a6be5, #5b76e6, #7583e9, #8b90eb, #9e9eee, #b0acf1);
-    --foreground: #ededed;
+    --background: linear-gradient(to right, #42047E, #5D1B9B, #7634B8, #8F4DD5, #A866F2, #C07FFC, #D899E6, #F0B2D0);
+
+    --foreground: #f7f7f7;
   }
 }
 
 body {
+  @apply font-sans; 
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family:inherit;
 }

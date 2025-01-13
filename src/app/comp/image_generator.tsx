@@ -1,5 +1,5 @@
 "use client"
-import { useState } from "react";
+import { useState, useEffect} from "react";
 
 interface ImageGeneratorProps {
     generateImage: (
@@ -11,15 +11,27 @@ export default function ImageGenerator({ generateImage }: ImageGeneratorProps) {
     const [inputText, setInputText] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [lastPrompt, setLastPrompt] = useState<string | null>(null); 
-    const [imageSrc, setImageSrc] = useState<string | null>(null);
+    //const [imageSrc, setImageSrc] = useState<string | null>(null);
+    const [images, setImages] = useState<string[]>([]);
     const [error, setError] = useState<string | null>(null);
+    const [bookmarkedImages, setBookmarkedImages] = useState<string[]>([]);
+
+    useEffect(() => {
+        const savedBookmarks = JSON.parse(localStorage.getItem("bookmarkedImages") || "[]");
+        setBookmarkedImages(savedBookmarks);
+    }, []);
+
+    // Save bookmarks to localStorage whenever they change
+    useEffect(() => {
+        localStorage.setItem("bookmarkedImages", JSON.stringify(bookmarkedImages));
+    }, [bookmarkedImages]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLastPrompt(inputText);
         setIsLoading(true);
         setIsLoading(true);
-        setImageSrc(null);
+        //setImageSrc(null);
         setError(null);
 
         try {
@@ -29,11 +41,7 @@ export default function ImageGenerator({ generateImage }: ImageGeneratorProps) {
             }
 
             if (result.imageUrl) {
-                const img = new Image();
-                img.onload = () => {
-                    setImageSrc(result.imageUrl);
-                };
-                img.src = result.imageUrl;
+                setImages(prevImages => [...prevImages, result.imageUrl]);
             } else {
                 throw new Error("No image URL received");
             }
@@ -48,52 +56,92 @@ export default function ImageGenerator({ generateImage }: ImageGeneratorProps) {
             setIsLoading(false);
         }
     };
+    
+    const handleBookmark = (image: string) => {
+        if (!bookmarkedImages.includes(image)) {
+            setBookmarkedImages((prev) => [...prev, image]);
+        }
+    };
+    
 
     return (
-        <div className="min-h-screen flex flex-col justify-between p-8">
-        <main className="flex-1">
-         {lastPrompt && (
-            <input
-              type="text"
-              value={lastPrompt}
-              readOnly
-              className="mb-4 text-lg p-3 block w-full border rounded focus:outline-none text-black"
-              placeholder="Last prompt appears here..."
-            />
-          )}
-          {imageSrc && (
-    <div className="w-full max-w-2xl rounded-lg overflow-hidden shadow-lg">
-      <img
-        src={imageSrc}
-        alt="Generated artwork"
-        className="w-full h-auto"
-        style={{ width: '30%', height: '30%' }}
-      />
-    </div>
-  )}
-        </main>
+      <div className="min-h-screen flex flex-col justify-between p-8">
+          <main className="flex-1">
+              {/* Header */}
+              <header className="text-center mb-8">
+                  <h1 className="text-4xl font-bold text-white drop-shadow-md">
+                      Unleash Your Imagination!
+                  </h1>
+              </header>
   
-        <footer className="w-full max-w-3xl mx-auto">
-          <form onSubmit={handleSubmit} className="w-full">
-            <div className="flex gap-2">
-              <input
-                type="text"
-                value={inputText}
-                onChange={e => setInputText(e.target.value)}
-                className="flex-1 p-3 rounded-lg bg-black/[.05] dark:bg-white/[.06] border border-black/[.08] dark:border-white/[.145] focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white"
-                placeholder="Describe the image you want to generate..."
-                disabled={isLoading}
-              />
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="px-6 py-3 rounded-lg bg-foreground text-background hover:bg-[#383838] dark:hover:bg-[#ccc] transition-colors disabled:opacity-50"
-              >
-                {isLoading ? "Generating..." : "Generate"}
-              </button>
-            </div>
-          </form>
-        </footer>
+              {/* Form for prompt input and generate button */}
+              <form onSubmit={handleSubmit} className="w-full max-w-3xl mx-auto mb-8">
+                  <div className="flex gap-2">
+                      <input
+                          type="text"
+                          value={inputText}
+                          onChange={(e) => setInputText(e.target.value)}
+                          className="flex-1 p-3 rounded-lg bg-black/[.05] dark:bg-white/[.06] border border-black/[.08] dark:border-white/[.145] focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white"
+                          placeholder="Describe the image you want to generate..."
+                          disabled={isLoading}
+                      />
+                      <button
+                          type="submit"
+                          disabled={isLoading}
+                          className="px-6 py-3 rounded-lg bg-foreground text-blue-700 hover:bg-[#383838] dark:hover:bg-[#ccc] transition-colors disabled:opacity-50"
+                      >
+                          {isLoading ? "Generating..." : "Generate"}
+                      </button>
+                  </div>
+              </form>
+              {/* Render the Clear button and image stack when images exist */}
+              {images.length > 0 && (
+                  <div>
+                      {/* Clear button */}
+                      <button
+                          onClick={() => setImages([])}
+                          className="mb-4 px-6 py-3 rounded-lg bg-red-500 text-white hover:bg-red-700 transition-colors"
+                      >
+                          Clear Images
+                      </button>
+  
+                      {/* Stacked images */}
+                      <div className="flex flex-wrap gap-4">
+                          {images.map((image, index) => (
+                              <div key={index} className="relative group w-full max-w-xs rounded-lg overflow-hidden shadow-lg">
+                                  <img
+                                      src={image}
+                                      alt={`Generated artwork ${index + 1}`}
+                                      className="w-full h-auto"
+                                  />
+                                     {/* Bookmark Button */}
+                             <button
+                              onClick={() => handleBookmark(image)}
+                              className="absolute top-2 right-2 rounded-full p-2 z-10 transition-opacity
+                              ${bookmarkedImages.includes(image) ? 'bg-white text-black' : 'bg-black bg-opacity-50 text-white opacity-0 group-hover:opacity-100'}}"
+                                >
+                               <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2}
+                    stroke="currentColor"
+                    className="w-6 h-6 text-white"
+                >
+                    <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M5 3v18l7-5 7 5V3H5z"
+                    />
+                </svg>
+                             </button>
+                              </div>
+                          ))}
+                      </div>
+                  </div>
+              )}
+          </main>
       </div>
-    );
+  );
+  
 }
