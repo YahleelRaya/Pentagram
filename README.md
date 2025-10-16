@@ -1,5 +1,10 @@
 # Pentagram: Instagram, but with AI Images
 
+🖼️ What Makes Pentagram Special?
+✅ AI-Generated Images: Create custom images in real-time using Stable Diffusion 3.5 Turbo.
+✅ Realtime Updates: New images appear instantly without refreshing the page.
+✅ User Profiles: Each user has a unique username and can save their images.
+✅ Likes System: Users can like and engage with AI-generated images.
 ## Getting Started
 
 First, clone the GitHub repository:
